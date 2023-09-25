@@ -25,6 +25,15 @@ func init() {
 }
 
 func main() {
+	// kuralSubscription := KuralSubscription{}
+	
+	// for _, email := range appSettings.RECIPIENTS {
+	// 	subscriber := KuralSubscriber{email}
+	// 	kuralSubscription.Subscribe(subscriber)
+	// }
+
+	// kuralSubscription.Notify()
+
 	kural, err := kural.GetDailyKural(appSettings, utils.RandomNumber(), "tamil")
 	if err != nil {
 		fmt.Println(err)
@@ -32,6 +41,43 @@ func main() {
 		fmt.Printf("Kural Number: %d, Ran successfully on %s", kural.Number, time.Now())
 	}
 }
+
+type Subscription interface {
+	Subscribe(subscriber  Subscriber)
+	Unsubscribe (subscriber Subscriber)
+	Notify()
+}
+
+type Subscriber interface {
+	GetNotification()
+}
+
+type KuralSubscription struct {
+	subscribers []Subscriber
+}
+
+func (k KuralSubscription) Subscribe (subscriber KuralSubscriber) {
+	k.subscribers = append(k.subscribers, subscriber)
+}
+
+func (k KuralSubscription) UnSubscribe (subscriber KuralSubscriber) {
+	// delete(k.subscribers, subscriber)
+}
+
+func (k KuralSubscription) Notify() {
+	for _, subscriber := range k.subscribers {
+		subscriber.GetNotification()
+	}
+}
+
+type KuralSubscriber struct {
+	email string
+}
+
+func (s KuralSubscriber) GetNotification() {
+	fmt.Println("got notification")
+}
+
 
 // TODO: Apply Visitor Pattern for translator
 // TODO: Add Notifier
