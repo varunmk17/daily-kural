@@ -14,29 +14,25 @@ func (mailer *EmailNotifier) Initialize(publicKey, secretKey string) {
 	mailer.Client = mailjet.NewMailjetClient(publicKey, secretKey)
 }
 
-func (mailer *EmailNotifier) Send(message string, sender string, recipients []string) error {
+func (mailer *EmailNotifier) Send(message string, sender string, recipient string) error {
 	messagesInfo := []mailjet.InfoMessagesV31{}
 
-	for i := 0; i < len(recipients); i++ {
-		recipient := recipients[i]
-
-		message := mailjet.InfoMessagesV31{
-			From: &mailjet.RecipientV31{
-				Email: sender,
-				Name:  "Learning Workspace",
+	dailyMessage := mailjet.InfoMessagesV31{
+		From: &mailjet.RecipientV31{
+			Email: sender,
+			Name:  "Learning Workspace",
+		},
+		To: &mailjet.RecipientsV31{
+			mailjet.RecipientV31{
+				Email: recipient,
 			},
-			To: &mailjet.RecipientsV31{
-				mailjet.RecipientV31{
-					Email: recipient,
-				},
-			},
-			Subject:  "Daily Kural",
-			TextPart: message,
-			HTMLPart: fmt.Sprintf("<h3>%s</h3><br />", message),
-		}
-
-		messagesInfo = append(messagesInfo, message)
+		},
+		Subject:  "Daily Kural",
+		TextPart: message,
+		HTMLPart: fmt.Sprintf("<h3>%s</h3><br />", message),
 	}
+
+	messagesInfo = append(messagesInfo, dailyMessage)
 
 	messages := mailjet.MessagesV31{Info: messagesInfo}
 	_, err := mailer.Client.SendMailV31(&messages)

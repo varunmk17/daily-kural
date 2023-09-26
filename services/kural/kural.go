@@ -6,7 +6,6 @@ import (
 
 	"local.dev.com/config"
 	kuralapi "local.dev.com/infrastructure/kural-api"
-	emailer "local.dev.com/infrastructure/mailjet"
 	"local.dev.com/utils"
 )
 
@@ -18,6 +17,7 @@ type Kural struct {
 	Kural        string
 	Explanation  string
 	Language     string
+	Headers      *KuralNotificationHelper
 }
 
 type KuralNotificationHelper struct {
@@ -43,7 +43,6 @@ func GetDailyKural(appSettings *config.Config, number int, language string) (*Ku
 	}
 
 	var kural *Kural
-	var kuralNotificationHelper *KuralNotificationHelper
 
 	switch strings.ToLower(language) {
 	case "tamil":
@@ -56,12 +55,11 @@ func GetDailyKural(appSettings *config.Config, number int, language string) (*Ku
 				Kural:        fmt.Sprintf("%s %v %s", kuralApiResponse.Line1InTamil, "\n <br/>", kuralApiResponse.Line2InTamil),
 				Explanation:  kuralApiResponse.ExplanationInTamil,
 				Language:     language,
-			}
-
-			kuralNotificationHelper = &KuralNotificationHelper{
-				Language:          language,
-				HeaderKural:       "திருக்குறள்",
-				HeaderExplanation: "பொருள்",
+				Headers: &KuralNotificationHelper{
+					Language:          language,
+					HeaderKural:       "திருக்குறள்",
+					HeaderExplanation: "பொருள்",
+				},
 			}
 		}
 	case "english":
@@ -74,22 +72,14 @@ func GetDailyKural(appSettings *config.Config, number int, language string) (*Ku
 				Kural:        kuralApiResponse.KuralInEnglish,
 				Explanation:  kuralApiResponse.ExplanationInEnglish,
 				Language:     language,
-			}
-
-			kuralNotificationHelper = &KuralNotificationHelper{
-				Language:          language,
-				HeaderKural:       "Thirukkural",
-				HeaderExplanation: "Explanation",
+				Headers: &KuralNotificationHelper{
+					Language:          language,
+					HeaderKural:       "Thirukkural",
+					HeaderExplanation: "Explanation",
+				},
 			}
 		}
 	}
-
-	mailer := emailer.EmailNotifier{}
-	mailer.Initialize(appSettings.MJ_PUBLIC_KEY, appSettings.MJ_SECRET_KEY)
-
-	// TODO: Create Email template type driven by language
-	message := fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>%s", kuralNotificationHelper.HeaderKural, kural.Kural, kuralNotificationHelper.HeaderExplanation, kural.Explanation)
-	mailer.Send(message, appSettings.MJ_MAIL_SENDER, appSettings.RECIPIENTS)
 
 	return kural, nil
 }

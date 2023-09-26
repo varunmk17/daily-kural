@@ -26,7 +26,7 @@ func TestSendSuccess(t *testing.T) {
 	emailer.Initialize(publicKey, secretKey)
 
 	fromEmail := "mock-sender@dev.com"
-	toEmail := []string{"mock-recipient@dev.com"}
+	toEmail := "mock-recipient@dev.com"
 	err := emailer.Send("!!daily kural!!", fromEmail, toEmail)
 	if err != nil {
 		t.Errorf("Expected no error")
@@ -41,7 +41,7 @@ func TestSendFailure(t *testing.T) {
 	emailer.Initialize(publicKey, secretKey)
 
 	fromEmail := "mock-sender@dev.com"
-	toEmail := []string{"mock-recipient@dev.com"}
+	toEmail := "mock-recipient@dev.com"
 	err := emailer.Send("!!daily kural!!", fromEmail, toEmail)
 	if err == nil {
 		t.Errorf("Expected api key authentication error")
