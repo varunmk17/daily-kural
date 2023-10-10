@@ -7,21 +7,22 @@ import (
 	"net/http"
 )
 
-const KURAL_API_URL = "https://api-thirukkural.vercel.app/api?num=%d"
+const KURAL_API_URL = "https://getthirukkural.appspot.com/api/3.0/kural/%d?appid=op7r7rdthtmmu&format=json"
 
 type KuralApiResponse struct {
-	Number                int    `json:"number"`
-	SectionInTamil        string `json:"sect_tam"`
-	ChapterGroupInTamil   string `json:"chapgrp_tam"`
-	ChapterInTamil        string `json:"chap_tam"`
-	Line1InTamil          string `json:"line1"`
-	Line2InTamil          string `json:"line2"`
-	ExplanationInTamil    string `json:"tam_exp"`
-	SectionInEnglish      string `json:"sect_eng"`
-	ChapterGroupInEnglish string `json:"chapgrp_eng"`
-	ChapterInEnglish      string `json:"chap_eng"`
-	KuralInEnglish        string `json:"eng"`
-	ExplanationInEnglish  string `json:"eng_exp"`
+	Number      int    `json:"number"`
+	Paal        string `json:"paal"`
+	Iyal        string `json:"iyal"`
+	Athigaram   string `json:"athigaram"`
+	Line1       string `json:"line1"`
+	Line2       string `json:"line2"`
+	Urai1       string `json:"urai1"`
+	Urai1Author string `json:"urai1Author"`
+	Urai2       string `json:"urai2"`
+	Urai2Author string `json:"urai2Author"`
+	Urai3       string `json:"urai3"`
+	Urai3Author string `json:"urai3Author"`
+	Translation string `json:"translation"`
 }
 
 func GetKuralByNumber(kuralNumber int) (*KuralApiResponse, error) {
