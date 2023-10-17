@@ -39,4 +39,9 @@ func main() {
 		fmt.Printf("Kural Number: %d, Ran successfully on %s", kural.Number, time.Now())
 		kuralSubscription.Notify(kural)
 	}
+
+	// Todo: Must: Make it a web server with Subscribe & Unsubscibe Endpoints
+	// Todo: Must: Invest time to write test cases 
+	// Todo: MayBe: Beautify html content of the email
+	// Todo: Stretch: Link to access the email content in browser
 }

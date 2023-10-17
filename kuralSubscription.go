@@ -37,6 +37,11 @@ type KuralSubscriber struct {
 
 func (s KuralSubscriber) GetNotification(dailyKural *kural.Kural, mailer emailer.EmailNotifier) {
 	// TODO: Create Email template type driven by language
-	message := fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>%s", dailyKural.Headers.HeaderKural, dailyKural.Kural, dailyKural.Headers.HeaderExplanation, dailyKural.Explanation)
+	message := fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>", dailyKural.Headers.HeaderKural, dailyKural.Kural, dailyKural.Headers.HeaderExplanation)
+
+	for _, urai := range dailyKural.Urai {
+		message = fmt.Sprintf("%s <br/> %s - %s <br/>", message, urai.Explanation, urai.Author)
+	}
+
 	mailer.Send(message, appSettings.MJ_MAIL_SENDER, s.email)
 }
