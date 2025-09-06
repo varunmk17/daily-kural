@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thirukkural Randomizer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              dark: "#0f172a",
+              light: "#f8fafc",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Simple CSS animations -->
+    <style>
+      .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .slide-up {
+        animation: slideUp 0.3s ease-out;
+      }
+
+      .spin {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .hover-scale:hover {
+        transform: scale(1.02);
+      }
+
+      .hover-scale:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script>
+      // Fallback data
+      const FALLBACK_DATA = [
+        {
+          number: 123,
+          line1: "செறிவறிந்து சீர்மை பயக்கும் அறிவறிந்து",
+          line2: "ஆற்றின் அடங்கப் பெறின்.",
+          tamExp:
+            "அடக்கத்துடன் வாழ்வதே அறிவுடைமை என்று அறிந்து, ஒருவன் அடக்கமாக வாழ்ந்தால் அவனது அடக்கம் நல்லவர்களால் அறியப்பட்டு அது அவனுக்குப் பெருமையைக் கொடுக்கும்.",
+          eng: "Knowing wisdom who lives controlled  Name and fame seek him untold",
+          engExp:
+            "Knowing that self-control is knowledge, if a man should control himself, in the prescribed course, such self-control will bring him distinction among the wise.",
+          sectTam: "அறத்துப்பால்",
+          chapGrpTam: "இல்லறவியல்",
+          chapTam: "அடக்கம் உடைமை",
+        },
+      ];
+
+      const { useState, useEffect, useMemo, useRef, createElement: e } = React;
+
+      // SVG Icons as functions
+      const RefreshIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
+          })
+        );
+
+      const CopyIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z",
+          })
+        );
+
+      const ShareIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z",
+          })
+        );
+
+      const VolumeIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 12H4l3-3v6l-3-3h5zm6 0a3 3 0 000-6v6z",
+          })
+        );
+
+      const InfoIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+          })
+        );
+
+      const SparklesIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-7 w-7",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M5 3l1.5 1.5L5 6l1.5 1.5L5 9l1.5 1.5L5 12l1.5 1.5L5 15l1.5 1.5L5 18l1.5 1.5L5 21M19 3l-1.5 1.5L19 6l-1.5 1.5L19 9l-1.5 1.5L19 12l-1.5 1.5L19 15l-1.5 1.5L19 18l-1.5 1.5L19 21M12 2l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
+          })
+        );
+
+      const LanguagesIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129",
+          })
+        );
+
+      const GlobeIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
+          })
+        );
+
+      const MoonIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z",
+          })
+        );
+
+      const SunIcon = () =>
+        e(
+          "svg",
+          {
+            className: "h-4 w-4",
+            fill: "none",
+            stroke: "currentColor",
+            viewBox: "0 0 24 24",
+          },
+          e("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
+          })
+        );
+
+      // Utility functions
+      const normalizeFromAPI = (data) => {
+        if (!data || typeof data !== "object") return null;
+        return {
+          number: data.number || null,
+          line1: data.line1 || "",
+          line2: data.line2 || "",
+          tamExp: [data.urai1, data.urai2, data.urai3].filter(Boolean).join("\n\n"),
+          eng: data.translation || "",
+          engExp: data.en || "",
+          sectTam: data.paal || "",
+          chapGrpTam: data.iyal || "",
+          chapTam: data.athigaram || "",
+        };
+      };
+
+      const speak = async (text, lang = "ta-IN") => {
+        if (!("speechSynthesis" in window)) return;
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = lang;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      };
+
+      // Components
+      const Button = ({ className = "", children, ...props }) =>
+        e(
+          "button",
+          {
+            className: `inline-flex items-center gap-2 rounded-2xl px-4 py-2 shadow-sm hover:shadow-md transition-all border border-white/10 hover-scale ${className}`,
+            ...props,
+          },
+          children
+        );
+
+      const Card = ({ className = "", children }) =>
+        e(
+          "div",
+          {
+            className: `rounded-3xl p-6 shadow-xl border border-white/10 bg-white/5 backdrop-blur ${className}`,
+          },
+          children
+        );
+
+      function KuralCard({ kural, loading, dark, setDark, onRefresh, error }) {
+        const shareText = useMemo(() => {
+          if (!kural) return "";
+          return [
+            `Thirukkural #${kural.number ?? "?"}`,
+            `${kural.line1}`,
+            `${kural.line2}`,
+            "",
+            `Tamil meaning: ${kural.tamExp || ""}`,
+            `English: ${kural.eng || ""}`,
+          ].join("\n");
+        }, [kural]);
+
+        const onCopy = async () => {
+          try {
+            await navigator.clipboard.writeText(shareText);
+            alert("Copied to clipboard!");
+          } catch {
+            const textArea = document.createElement("textarea");
+            textArea.value = shareText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert("Copied to clipboard!");
+          }
+        };
+
+        const onShare = async () => {
+          try {
+            if (navigator.share) {
+              await navigator.share({ title: "Thirukkural", text: shareText });
+            } else {
+              await onCopy();
+            }
+          } catch {}
+        };
+
+        const bg = dark ? "bg-dark text-white" : "bg-light text-gray-900";
+
+        return e(
+          "div",
+          {
+            className: `min-h-screen ${bg} transition-colors flex justify-center items-start p-8`,
+          },
+          e(
+            "div",
+            { className: "max-w-4xl w-full" },
+            e(
+              "div",
+              { className: "flex items-center justify-between gap-4 mb-6" },
+              e(
+                "h1",
+                { className: "text-2xl md:text-4xl font-black tracking-tight fade-in" },
+                e(
+                  "span",
+                  { className: "inline-flex items-center gap-2" },
+                  e(SparklesIcon),
+                  " திருக்குறள் — Randomizer"
+                )
+              ),
+              e(
+                "div",
+                { className: "flex items-center gap-2" },
+                e(Button, { onClick: () => setDark((d) => !d) }, dark ? e(SunIcon) : e(MoonIcon)),
+                e(Button, { onClick: onRefresh }, e(RefreshIcon), " புதியது")
+              )
+            ),
+            e(
+              Card,
+              {},
+              loading &&
+                e(
+                  "div",
+                  { className: "flex items-center justify-center py-12" },
+                  e("div", { className: "spin" }, e(RefreshIcon))
+                ),
+
+              kural &&
+                !loading &&
+                e(
+                  "div",
+                  { className: "space-y-6 slide-up" },
+                  // Kural Number
+                  e(
+                    "div",
+                    { className: "text-center" },
+                    e(
+                      "span",
+                      {
+                        className:
+                          "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm font-medium",
+                      },
+                      e(SparklesIcon),
+                      `குறள் #${kural.number}`
+                    )
+                  ),
+
+                  // Tamil Kural
+                  e(
+                    "div",
+                    { className: "text-center space-y-2" },
+                    e(
+                      "div",
+                      { className: "text-xl md:text-2xl font-bold leading-relaxed" },
+                      kural.line1
+                    ),
+                    e(
+                      "div",
+                      { className: "text-xl md:text-2xl font-bold leading-relaxed" },
+                      kural.line2
+                    )
+                  ),
+
+                  // Tamil Explanation
+                  kural.tamExp &&
+                    e(
+                      "div",
+                      { className: "bg-white/5 rounded-2xl p-4" },
+                      e(
+                        "h3",
+                        { className: "text-sm font-semibold mb-2 flex items-center gap-2" },
+                        e(LanguagesIcon),
+                        "தமிழ் விளக்கம்"
+                      ),
+                      e("p", { className: "text-sm leading-relaxed opacity-90" }, kural.tamExp)
+                    ),
+
+                  // English Translation
+                  kural.eng &&
+                    e(
+                      "div",
+                      { className: "bg-white/5 rounded-2xl p-4" },
+                      e(
+                        "h3",
+                        { className: "text-sm font-semibold mb-2 flex items-center gap-2" },
+                        e(GlobeIcon),
+                        "English Translation"
+                      ),
+                      e(
+                        "p",
+                        { className: "text-sm leading-relaxed opacity-90 italic" },
+                        `"${kural.eng}"`
+                      ),
+                      kural.engExp &&
+                        e(
+                          "p",
+                          { className: "text-xs leading-relaxed opacity-75 mt-2" },
+                          kural.engExp
+                        )
+                    ),
+
+                  // Category Information
+                  (kural.sectTam || kural.chapGrpTam || kural.chapTam) &&
+                    e(
+                      "div",
+                      { className: "flex flex-wrap gap-2 justify-center" },
+                      kural.sectTam &&
+                        e(
+                          "span",
+                          { className: "px-2 py-1 bg-white/10 rounded-lg text-xs" },
+                          kural.sectTam
+                        ),
+                      kural.chapGrpTam &&
+                        e(
+                          "span",
+                          { className: "px-2 py-1 bg-white/10 rounded-lg text-xs" },
+                          kural.chapGrpTam
+                        ),
+                      kural.chapTam &&
+                        e(
+                          "span",
+                          { className: "px-2 py-1 bg-white/10 rounded-lg text-xs" },
+                          kural.chapTam
+                        )
+                    ),
+
+                  // Action Buttons
+                  e(
+                    "div",
+                    { className: "flex flex-wrap gap-2 justify-center pt-4" },
+                    e(
+                      Button,
+                      { onClick: () => speak(kural.line1 + " " + kural.line2) },
+                      e(VolumeIcon),
+                      "கேள்"
+                    ),
+                    e(Button, { onClick: onCopy }, e(CopyIcon), "நகல்"),
+                    e(Button, { onClick: onShare }, e(ShareIcon), "பகிர்")
+                  )
+                ),
+
+              error &&
+                e(
+                  "div",
+                  { className: "mt-4 text-xs text-yellow-200/90 flex items-center gap-2" },
+                  e(InfoIcon),
+                  error
+                )
+            )
+          )
+        );
+      }
+
+      function MainApp() {
+        const [kural, setKural] = useState(null);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState("");
+        const [dark, setDark] = useState(true);
+        const mounted = useRef(false);
+
+        const pickFallback = () => FALLBACK_DATA[Math.floor(Math.random() * FALLBACK_DATA.length)];
+
+        const fetchKural = async () => {
+          setLoading(true);
+          setError("");
+          try {
+            const num = 1 + Math.floor(Math.random() * 1330);
+            const res = await fetch(
+              `https://getthirukkural.appspot.com/api/3.0/kural/${num}?appid=op7r7rdthtmmu&format=json`,
+              { cache: "no-store" }
+            );
+            if (!res.ok) throw new Error("Network error");
+            const data = await res.json();
+            const normalized = normalizeFromAPI(data);
+            if (!normalized || (!normalized.line1 && !normalized.eng))
+              throw new Error("Unexpected API shape");
+            setKural(normalized);
+          } catch (e) {
+            setError("Online API unavailable — showing offline selection.");
+            setKural(pickFallback());
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        useEffect(() => {
+          if (!mounted.current) {
+            mounted.current = true;
+            fetchKural();
+          }
+        }, []);
+
+        return e(KuralCard, {
+          kural,
+          loading,
+          dark,
+          setDark,
+          onRefresh: fetchKural,
+          error,
+        });
+      }
+
+      // App Entry Point
+      function App() {
+        return e(MainApp);
+      }
+
+      // Render the app
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      root.render(e(App));
+    </script>
+  </body>
+</html>
