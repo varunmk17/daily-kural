@@ -23,6 +23,7 @@ type KuralApiResponse struct {
 	Urai3       string `json:"urai3"`
 	Urai3Author string `json:"urai3Author"`
 	Translation string `json:"translation"`
+	En		    string `json:"en"`
 }
 
 func GetKuralByNumber(kuralNumber int) (*KuralApiResponse, error) {

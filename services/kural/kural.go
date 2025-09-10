@@ -17,6 +17,8 @@ type Kural struct {
 	Kural        string
 	Urai         []Urai
 	Language     string
+	Translation string // poetic translation (from API: "translation")
+	En          string // prose explanation (from API: "en")
 	Headers      *KuralNotificationHelper
 }
 
@@ -72,6 +74,8 @@ func GetDailyKural(appSettings *config.Config, number int, language string) (*Ku
 				Chapter:      kuralApiResponse.Athigaram,
 				Kural:        fmt.Sprintf("%s %v %s", kuralApiResponse.Line1, "\n <br/>", kuralApiResponse.Line2),
 				Urai:         urai,
+				Translation:  kuralApiResponse.Translation, 
+				En:           kuralApiResponse.En,          
 				Language:     language,
 				Headers: &KuralNotificationHelper{
 					Language:          language,
