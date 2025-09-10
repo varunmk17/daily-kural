@@ -38,7 +38,7 @@ type KuralSubscriber struct {
 }
 
 func (s KuralSubscriber) GetNotification(dailyKural *kural.Kural, mailer emailer.EmailNotifier) {
-	htmlMessage, err := renderEmail(dailyKural)
+	htmlMessage, err := renderTemplate(dailyKural)
 	if err != nil {
 		htmlMessage = fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>", dailyKural.Headers.HeaderKural, dailyKural.Kural, dailyKural.Headers.HeaderExplanation)
 
@@ -50,16 +50,22 @@ func (s KuralSubscriber) GetNotification(dailyKural *kural.Kural, mailer emailer
 	mailer.Send(htmlMessage, appSettings.MJ_MAIL_SENDER, s.email)
 }
 
-func renderEmail(k *kural.Kural) (string, error) {
-	tmpl, err := template.ParseFiles("email_template.html")
-	if err != nil {
-		return "", err
-	}
+func renderTemplate(k *kural.Kural) (string, error) {
+    tmpl, err := template.New("email_template.html").
+        Funcs(template.FuncMap{
+            "safeHTML": func(s string) template.HTML {
+                return template.HTML(s) // keeps <br/> intact
+            },
+        }).
+        ParseFiles("email_template.html")
+    if err != nil {
+        return "", err
+    }
 
-	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, k); err != nil {
-		return "", err
-	}
+    var buf bytes.Buffer
+    if err := tmpl.Execute(&buf, k); err != nil {
+        return "", err
+    }
 
-	return buf.String(), nil
+    return buf.String(), nil
 }

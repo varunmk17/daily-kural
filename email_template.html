@@ -1,77 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <body style="margin:0; padding:0; background:#eceff1;">
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr>
-        <td align="center" style="padding:30px 0;">
-          <table border="0" cellpadding="0" cellspacing="0" width="600"
-                 style="background:#ffffff; border-radius:12px; font-family:Arial, sans-serif; padding:30px;">
-            
-            <!-- Header -->
-            <tr>
-              <td align="center" style="padding-bottom:20px;">
-                <h1 style="margin:0; font-size:24px; color:#2e7d32;">
-                  திருக்குறள் #{{.Number}}
-                </h1>
-                <p style="margin:4px 0; font-size:14px; color:#666;">
-                  {{.Section}} • {{.ChapterGroup}} • {{.Chapter}}
+<head><meta charset="UTF-8" /><title>Daily Kural</title></head>
+<body style="margin:0; padding:0; background:#f0ece0; font-family:'Latha','Noto Sans Tamil','Arial',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0; background:#f0ece0;">
+    <tr>
+      <td align="center">
+        <table width="580" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background:#8b5e3c; padding:24px; text-align:center;">
+              <h1 style="margin:0; color:#f5f5f5; font-size:26px; letter-spacing:1px;">
+                {{.Headers.HeaderKural}} • {{.Number}}
+              </h1>
+              <div style="height:2px; width:60px; background:#f5f5f5; margin:8px auto;"></div>
+            </td>
+          </tr>
+
+          <!-- Kural -->
+          <tr>
+            <td style="padding:30px 20px; text-align:center; color:#3e3e3e; font-size:20px; font-style:italic; line-height:1.8;">
+              {{.Kural | safeHTML}}
+            </td>
+          </tr>
+
+          <!-- Tamil Explanations -->
+          <tr>
+            <td style="background:#f9f6f0; padding:0 30px 20px 30px; color:#555; font-size:16px; line-height:1.6;">
+              <strong style="color:#8b5e3c; font-size:18px;">{{.Headers.HeaderExplanation}}</strong>
+              {{range .Urai}}
+                <p style="margin:12px 0 0 0; padding-left:10px; border-left:4px solid #8b5e3c;">
+                  {{.Explanation}}<br/><strong>— {{.Author}}</strong>
                 </p>
-              </td>
-            </tr>
+              {{end}}
+            </td>
+          </tr>
 
-            <!-- Kural -->
-            <tr>
-              <td style="font-size:18px; line-height:1.6; color:#000; text-align:center; padding:10px 0;">
-                {{.Kural}}
-              </td>
-            </tr>
+          <!-- English Translation -->
+          <tr>
+            <td style="padding:20px 30px; color:#444; font-size:16px; line-height:1.6;">
+              <strong style="color:#3a6f6c; font-size:18px;">English Translation</strong>
+              <p style="margin:12px 0;">{{.Translation}}</p>
+              <p style="margin:12px 0; color:#777;">{{.En}}</p>
+            </td>
+          </tr>
 
-            <!-- Tamil Explanations -->
-            <tr>
-              <td style="padding:20px 0;">
-                <h3 style="margin:0; font-size:18px; color:#1565c0;">{{.Headers.HeaderExplanation}} (தமிழ்)</h3>
-                {{range .Urai}}
-                  <p style="margin:10px 0; font-size:14px; line-height:1.6; color:#333;">
-                    {{.Explanation}}<br/>
-                    <em style="color:#777;">– {{.Author}}</em>
-                  </p>
-                {{end}}
-              </td>
-            </tr>
-
-            <!-- English Translation -->
-            <tr>
-              <td style="padding:20px 0;">
-                <h3 style="margin:0; font-size:18px; color:#1565c0;">English Translation</h3>
-                <p style="margin:10px 0; font-size:14px; line-height:1.6; color:#333;">
-                  {{.Translation}}
-                </p>
-                <p style="margin:10px 0; font-size:14px; line-height:1.6; color:#555;">
-                  {{.En}}
-                </p>
-              </td>
-            </tr>
-
-            <!-- Footer -->
-            <tr>
-              <td align="center" style="padding-top:30px;">
-                <a href="https://your-app.netlify.app"
-                   style="display:inline-block; padding:12px 24px; background:#2e7d32; color:#fff;
-                          text-decoration:none; border-radius:6px; font-size:16px;">
-                  View More Kurals
-                </a>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding-top:30px; font-size:12px; color:#999; text-align:center;">
-                Sent with ❤️ · Thirukkural API
-              </td>
-            </tr>
-
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
+          <!-- Footer -->
+          <tr>
+            <td style="background:#8b5e3c; text-align:center; padding:14px; color:#fff; font-size:13px;">
+              செவ்வணக்கம் · Sent with ❤️ by Learning Workspace
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>

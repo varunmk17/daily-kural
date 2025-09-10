@@ -72,7 +72,7 @@ func GetDailyKural(appSettings *config.Config, number int, language string) (*Ku
 				Section:      kuralApiResponse.Paal,
 				ChapterGroup: kuralApiResponse.Iyal,
 				Chapter:      kuralApiResponse.Athigaram,
-				Kural:        fmt.Sprintf("%s %v %s", kuralApiResponse.Line1, "\n <br/>", kuralApiResponse.Line2),
+				Kural: fmt.Sprintf("%s<br/>%s", kuralApiResponse.Line1, kuralApiResponse.Line2),
 				Urai:         urai,
 				Translation:  kuralApiResponse.Translation, 
 				En:           kuralApiResponse.En,          
