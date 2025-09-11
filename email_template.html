@@ -1,58 +1,62 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8" /><title>Daily Kural</title></head>
-<body style="margin:0; padding:0; background:#f0ece0; font-family:'Latha','Noto Sans Tamil','Arial',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0; background:#f0ece0;">
-    <tr>
-      <td align="center">
-        <table width="580" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
-          <!-- Header -->
-          <tr>
-            <td style="background:#8b5e3c; padding:24px; text-align:center;">
-              <h1 style="margin:0; color:#f5f5f5; font-size:26px; letter-spacing:1px;">
-                {{.Headers.HeaderKural}} • {{.Number}}
-              </h1>
-              <div style="height:2px; width:60px; background:#f5f5f5; margin:8px auto;"></div>
-            </td>
-          </tr>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <title>திருக்குறள் Daily</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;700&family=Roboto:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0; padding:0; background:linear-gradient(135deg,#fafafa,#f2f6ff); font-family:'Noto Serif Tamil','Roboto',serif;">
 
-          <!-- Kural -->
-          <tr>
-            <td style="padding:30px 20px; text-align:center; color:#3e3e3e; font-size:20px; font-style:italic; line-height:1.8;">
-              {{.Kural | safeHTML}}
-            </td>
-          </tr>
+  <div style="max-width:680px; margin:auto; padding:30px;">
 
-          <!-- Tamil Explanations -->
-          <tr>
-            <td style="background:#f9f6f0; padding:0 30px 20px 30px; color:#555; font-size:16px; line-height:1.6;">
-              <strong style="color:#8b5e3c; font-size:18px;">{{.Headers.HeaderExplanation}}</strong>
-              {{range .Urai}}
-                <p style="margin:12px 0 0 0; padding-left:10px; border-left:4px solid #8b5e3c;">
-                  {{.Explanation}}<br/><strong>— {{.Author}}</strong>
-                </p>
-              {{end}}
-            </td>
-          </tr>
+    <!-- Background wrapper with watermark -->
+    <div style="position:relative; background:linear-gradient(145deg,#ffffff,#f0f4ff); border-radius:20px; padding:28px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden;">
 
-          <!-- English Translation -->
-          <tr>
-            <td style="padding:20px 30px; color:#444; font-size:16px; line-height:1.6;">
-              <strong style="color:#3a6f6c; font-size:18px;">English Translation</strong>
-              <p style="margin:12px 0;">{{.Translation}}</p>
-              <p style="margin:12px 0; color:#777;">{{.En}}</p>
-            </td>
-          </tr>
+      <!-- Watermark -->
+      <div style="position:absolute; top:20%; left:-10%; font-size:120px; font-weight:700; color:rgba(0,0,0,0.04); transform:rotate(-15deg); white-space:nowrap; pointer-events:none;">
+        திருக்குறள்
+      </div>
 
-          <!-- Footer -->
-          <tr>
-            <td style="background:#8b5e3c; text-align:center; padding:14px; color:#fff; font-size:13px;">
-              செவ்வணக்கம் · Sent with ❤️ by Learning Workspace
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+      <!-- Content -->
+      <div style="position:relative; z-index:1;">
+
+        <!-- Header -->
+        <h1 style="text-align:center; font-size:28px; font-weight:700; color:#1a1a1a; margin:0;">
+          திருக்குறள் <span style="font-size:16px; font-weight:400; color:#888;">#{{.Number}}</span>
+        </h1>
+
+        <!-- Subheader metadata -->
+        <p style="text-align:center; font-size:14px; color:#666; margin-top:6px; margin-bottom:22px; line-height:1.5;">
+          பகுதி: {{.Section}} · இயல்: {{.ChapterGroup}} · அதிகாரம்: {{.Chapter}}
+        </p>
+
+        <!-- Lines -->
+        <p style="text-align:center; font-size:22px; line-height:1.8; font-weight:600; color:#222; margin:0 0 20px;">
+          {{.Line1}}<br/>{{.Line2}}
+        </p>
+
+        <!-- Explanations -->
+        <h2 style="font-size:18px; color:#2b7a0b; margin-bottom:12px;">பொருள் (Explanations)</h2>
+        {{range .Urai}}
+        <div style="background:#f3f9f4; padding:14px 18px; border-radius:12px; margin-bottom:14px; border-left:4px solid #2e7d32;">
+          <p style="margin:0; font-size:15px; color:#222; line-height:1.6;">{{.Explanation}}</p>
+          <p style="margin-top:6px; font-size:13px; color:#555; text-align:right;">– {{.Author}}</p>
+        </div>
+        {{end}}
+
+        <!-- English -->
+        <h2 style="font-size:18px; color:#0d47a1; margin-top:20px; margin-bottom:12px;">English Translation</h2>
+        <div style="background:#eef3ff; padding:14px 18px; border-radius:12px; font-size:15px; line-height:1.6; color:#222; border-left:4px solid #1565c0;">
+          {{.Translation}}
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align:center; margin-top:28px; font-size:14px; color:#666;">
+          ❤️ Sent with heart — <span style="color:#111; font-weight:600;">Learning Workspace</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </body>
 </html>
