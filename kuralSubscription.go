@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 
+	"io"
+	"log"
+	"net/http"
 	"bytes"
 	"html/template"
 	"local.dev.com/services/kural"
@@ -38,19 +41,21 @@ type KuralSubscriber struct {
 }
 
 func (s KuralSubscriber) GetNotification(dailyKural *kural.Kural, mailer emailer.EmailNotifier) {
-	htmlMessage, err := renderTemplate(dailyKural)
+	htmlMessage, err := renderRemoteTemplate(dailyKural)
 	if err != nil {
-		htmlMessage = fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>", dailyKural.Headers.HeaderKural, dailyKural.Kural, dailyKural.Headers.HeaderExplanation)
+		htmlMessage, err = renderLocalTemplate(dailyKural)
+		if err != nil {
+			htmlMessage = fmt.Sprintf("%s: <br/> %s <br/> <br/> %s: <br/>", dailyKural.Headers.HeaderKural, dailyKural.Kural, dailyKural.Headers.HeaderExplanation)
 
-		for _, urai := range dailyKural.Urai {
-			htmlMessage = fmt.Sprintf("%s <br/> %s - %s <br/>", htmlMessage, urai.Explanation, urai.Author)
+			for _, urai := range dailyKural.Urai {
+				htmlMessage = fmt.Sprintf("%s <br/> %s - %s <br/>", htmlMessage, urai.Explanation, urai.Author)
+			}
 		}
 	}
-
 	mailer.Send(htmlMessage, appSettings.MJ_MAIL_SENDER, s.email)
 }
 
-func renderTemplate(k *kural.Kural) (string, error) {
+func renderLocalTemplate(k *kural.Kural) (string, error) {
     tmpl, err := template.New("email_template.html").
         Funcs(template.FuncMap{
             "safeHTML": func(s string) template.HTML {
@@ -69,3 +74,28 @@ func renderTemplate(k *kural.Kural) (string, error) {
 
     return buf.String(), nil
 }
+
+func renderRemoteTemplate(k *kural.Kural) (string, error) {
+	resp, err := http.Get("https://storage.googleapis.com/daily-kural/email_template.html")
+	if err != nil {
+		log.Fatalf("failed to fetch template: %v", err)
+	}
+	defer resp.Body.Close()
+	tplBytes, _ := io.ReadAll(resp.Body)
+
+	tmpl, err := template.New("email").Funcs(template.FuncMap{
+            "safeHTML": func(s string) template.HTML {
+                return template.HTML(s) // keeps <br/> intact
+            },
+        }).Parse(string(tplBytes))
+	if err != nil {
+		log.Fatalf("failed to parse template: %v", err)
+	}
+
+	var buf bytes.Buffer
+	tmpl.Execute(&buf, k)
+	htmlContent := buf.String()
+
+	return htmlContent, nil
+}
+
