@@ -1,60 +1,52 @@
 <!DOCTYPE html>
 <html lang="ta">
-<head>
-  <meta charset="UTF-8" />
-  <title>திருக்குறள் Daily</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tamil:wght@400;700&family=Roboto:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0; padding:0; background:linear-gradient(135deg,#fafafa,#f2f6ff); font-family:'Noto Serif Tamil','Roboto',serif;">
+<head><meta charset="utf-8"><title>திருக்குறள்</title></head>
+<body style="margin:0;padding:0;background:linear-gradient(180deg,#f6f8fb,#e6eef8);font-family:'Noto Serif Tamil','Roboto',serif;">
+  <div style="max-width:680px;margin:24px auto;padding:18px;">
+    <div style="background:linear-gradient(145deg,#ffffff,#f0f4ff);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,24,40,0.08);position:relative;overflow:hidden;">
+      <!-- watermark -->
+      <div style="position:absolute;left:-6%;top:14%;font-size:120px;color:rgba(0,0,0,0.03);transform:rotate(-12deg);pointer-events:none;white-space:nowrap;">திருக்குறள்</div>
 
-  <div style="max-width:680px; margin:auto; padding:30px;">
+      <!-- header -->
+      <h1 style="text-align:center;margin:0;font-size:28px;font-weight:700;color:#111;">
+        திருக்குறள் <span style="font-size:15px;font-weight:400;color:#777;">#{{.Number}}</span>
+      </h1>
 
-    <!-- Background wrapper with watermark -->
-    <div style="position:relative; background:linear-gradient(145deg,#ffffff,#f0f4ff); border-radius:20px; padding:28px; box-shadow:0 6px 18px rgba(0,0,0,0.08); overflow:hidden;">
+      <!-- subtitle meta under header -->
+      <p style="text-align:center;color:#666;margin:8px 0 20px 0;font-size:14px;">
+        பகுதி: {{.Section}} · இயல்: {{.ChapterGroup}} · அதிகாரம்: {{.Chapter}}
+      </p>
 
-      <!-- Watermark -->
-      <div style="position:absolute; top:20%; left:-10%; font-size:120px; font-weight:700; color:rgba(0,0,0,0.04); transform:rotate(-15deg); white-space:nowrap; pointer-events:none;">
-        திருக்குறள்
+      <!-- elevated kural card -->
+      <div style="margin:0 auto 22px auto;padding:20px;border-radius:14px;background:#fff8f3;border-left:6px solid #ff8a65;box-shadow:0 6px 18px rgba(34,34,34,0.06);text-align:center;font-size:20px;line-height:1.8;color:#222;font-weight:600;">
+        {{.Kural | safeHTML}}
       </div>
 
-      <!-- Content -->
-      <div style="position:relative; z-index:1;">
+      <!-- explanations -->
+      <h2 style="font-size:18px;color:#2e7d32;margin:6px 0 12px 0;">பொருள் (Explanations)</h2>
+      {{range .Urai}}
+      <div style="background:#f6fbf6;padding:12px 14px;border-radius:10px;margin-bottom:12px;border-left:4px solid #2e7d32;">
+        <p style="margin:0;color:#222;line-height:1.6;">{{.Explanation}}</p>
+        <p style="margin-top:6px;text-align:right;color:#555;font-size:13px;">– {{.Author}}</p>
+      </div>
+      {{end}}
 
-        <!-- Header -->
-        <h1 style="text-align:center; font-size:28px; font-weight:700; color:#1a1a1a; margin:0;">
-          திருக்குறள் <span style="font-size:16px; font-weight:400; color:#888;">#{{.Number}}</span>
-        </h1>
+      <!-- English translation -->
+      {{if .Translation}}
+      <h2 style="font-size:18px;color:#0d47a1;margin-top:18px;margin-bottom:8px;">English Translation</h2>
+      <div style="background:#eef4ff;padding:12px;border-radius:10px;border-left:4px solid #1565c0;color:#222;line-height:1.6;">
+        {{.Translation}}
+      </div>
+      {{end}}
 
-        <!-- Subheader metadata -->
-        <p style="text-align:center; font-size:14px; color:#666; margin-top:6px; margin-bottom:22px; line-height:1.5;">
-          பகுதி: {{.Section}} · இயல்: {{.ChapterGroup}} · அதிகாரம்: {{.Chapter}}
-        </p>
+      <!-- optional En prose -->
+      {{if .En}}
+      <div style="margin-top:10px;color:#666;font-size:14px;">{{.En}}</div>
+      {{end}}
 
-        <!-- Lines -->
-        <p style="text-align:center; font-size:22px; line-height:1.8; font-weight:600; color:#222; margin:0 0 20px;">
-          {{.Line1}}<br/>{{.Line2}}
-        </p>
-
-        <!-- Explanations -->
-        <h2 style="font-size:18px; color:#2b7a0b; margin-bottom:12px;">பொருள் (Explanations)</h2>
-        {{range .Urai}}
-        <div style="background:#f3f9f4; padding:14px 18px; border-radius:12px; margin-bottom:14px; border-left:4px solid #2e7d32;">
-          <p style="margin:0; font-size:15px; color:#222; line-height:1.6;">{{.Explanation}}</p>
-          <p style="margin-top:6px; font-size:13px; color:#555; text-align:right;">– {{.Author}}</p>
-        </div>
-        {{end}}
-
-        <!-- English -->
-        <h2 style="font-size:18px; color:#0d47a1; margin-top:20px; margin-bottom:12px;">English Translation</h2>
-        <div style="background:#eef3ff; padding:14px 18px; border-radius:12px; font-size:15px; line-height:1.6; color:#222; border-left:4px solid #1565c0;">
-          {{.Translation}}
-        </div>
-
-        <!-- Footer -->
-        <div style="text-align:center; margin-top:28px; font-size:14px; color:#666;">
-          ❤️ Sent with heart — <span style="color:#111; font-weight:600;">Learning Workspace</span>
-        </div>
-
+      <!-- footer -->
+      <div style="text-align:center;margin-top:22px;color:#666;font-size:14px;">
+        ❤️ Sent with heart — <strong style="color:#111;">Learning Workspace</strong>
       </div>
     </div>
   </div>
